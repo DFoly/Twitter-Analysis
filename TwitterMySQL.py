@@ -25,7 +25,7 @@ def connect(username, created_at, tweet, retweet_count, place , location):
 	"""
 	try:
 		con = mysql.connector.connect(host = 'localhost',
-		database='twitterdb', user='root', password = 'titleist920', charset = 'utf8')
+		database='twitterdb', user='root', password = , charset = 'utf8')
 		
 
 		if con.is_connected():

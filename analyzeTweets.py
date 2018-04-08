@@ -105,7 +105,7 @@ class TweetObject():
 			words = text.split()
 			words = [word for word in words if not word in stopword_list]
 			 # only use stem of word
-			words = [ps.stem(word) for word in words]
+			#words = [ps.stem(word) for word in words]
 			df['clean_tweets'][i] = ' '.join(words)
 
 
@@ -179,15 +179,14 @@ class TweetObject():
 
 
 if __name__ == '__main__':
+
 	t = TweetObject( host = 'localhost', database = 'twitterdb', user = 'root', password = 'titleist920')
-	#print(t.consumer_key)
-	#print(t.host)
+
 	data  = t.MySQLConnect("SELECT created_at, tweet FROM `TwitterDB`.`Twitter`;")
-	#print(data)
 	data = t.clean_tweets(data)
 	data['Sentiment'] = np.array([t.sentiment(x) for x in data['clean_tweets']])
-	#t.word_cloud(data)
-	#t.save_to_csv(data)
+	t.word_cloud(data)
+	t.save_to_csv(data)
 	
 	pos_tweets = [tweet for index, tweet in enumerate(data["clean_tweets"]) if data["Sentiment"][index] > 0]
 	neg_tweets = [tweet for index, tweet in enumerate(data["clean_tweets"]) if data["Sentiment"][index] < 0]
