@@ -7,10 +7,10 @@ import json
 from dateutil import parser
 import time
 import os
+import subprocess
 
 #importing file which sets env variable
-# import subprocess
-# subprocess.call("./settings.sh", shell = True)
+subprocess.call("./settings.sh", shell = True)
 
 
 consumer_key = os.environ['CONSUMER_KEY']
@@ -33,7 +33,8 @@ def connect(username, created_at, tweet, retweet_count, place , location):
 			Insert twitter data
 			"""
 			cursor = con.cursor()
-			query = "INSERT INTO twitter (username, created_at, tweet, retweet_count,place, location) VALUES (%s, %s, %s, %s, %s, %s)"
+			# twitter, golf
+			query = "INSERT INTO Golf (username, created_at, tweet, retweet_count,place, location) VALUES (%s, %s, %s, %s, %s, %s)"
 			cursor.execute(query, (username, created_at, tweet, retweet_count, place, location))
 			con.commit()
 			
@@ -119,7 +120,8 @@ if __name__== '__main__':
 	listener = Streamlistener(api = api)
 	stream = tweepy.Stream(auth, listener = listener)
 
-	track = ['nba', 'cavs', 'celtics', 'basketball']
+	track = ['golf', 'masters', 'reid', 'mcilroy', 'woods']
+	#track = ['nba', 'cavs', 'celtics', 'basketball']
 	# choose what we want to filter by
 	stream.filter(track = track, languages = ['en'])
 

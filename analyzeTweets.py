@@ -10,12 +10,13 @@ import nltk
 from wordcloud import WordCloud, STOPWORDS
 import numpy as np
 import matplotlib.pyplot as plt
+from textblob import TextBlob
 
 
 
 class TweetObject():
 	"""
-
+	
 
 
 	"""
@@ -36,6 +37,14 @@ class TweetObject():
 		Connects to database and extracts
 		raw tweets and any other columns we
 		need
+
+		Parameters:
+		----------------
+		arg1: string: SQL query
+
+		Returns:
+		----------------
+		Pandas dataframe
 
 		"""
 
@@ -85,6 +94,7 @@ class TweetObject():
 		stopword_list = stopwords.words('english')
 		ps = PorterStemmer()
 		df["clean_tweets"] = None
+		df['len'] = None
 		for i in range(0,len(df['tweet'])):
 			# get rid of anythin that isnt a letter
 
@@ -97,6 +107,10 @@ class TweetObject():
 			 # only use stem of word
 			words = [ps.stem(word) for word in words]
 			df['clean_tweets'][i] = ' '.join(words)
+
+
+		# Create column with data length
+		df['len'] = np.array([len(tweet) for tweet in data["clean_tweets"]])
 			
 
 
@@ -104,18 +118,39 @@ class TweetObject():
 
 
 
-	def sentiment(self):
-		pass
+	def sentiment(self, tweet):
 		"""
 		This function calculates sentiment
 		from our base on our cleaned tweets.
+		Uses textblob to calculate polarity.
+
+		Parameters:
+		----------------
+		arg1: takes in a tweet (row of dataframe)
+
 		"""
+
+		# need to improce
+		analysis = TextBlob(tweet)
+		if analysis.sentiment.polarity > 0:
+			return 1
+		elif analysis.sentiment.polarity == 0:
+			return 0
+		else:
+			return -1
+
+
 
 
 	def save_to_csv(self, df):
 		"""
 		Save cleaned data to a csv for further
 		analysis.
+
+		Parameters:
+		----------------
+		arg1: Pandas dataframe
+
 		"""
 		try:
 			df.to_csv("clean_tweets.csv")
@@ -150,9 +185,19 @@ if __name__ == '__main__':
 	data  = t.MySQLConnect("SELECT created_at, tweet FROM `TwitterDB`.`Twitter`;")
 	#print(data)
 	data = t.clean_tweets(data)
-	print(data)
-	t.save_to_csv(data)
-	t.word_cloud(data)
+	data['Sentiment'] = np.array([t.sentiment(x) for x in data['clean_tweets']])
+	#t.word_cloud(data)
+	#t.save_to_csv(data)
+	
+	pos_tweets = [tweet for index, tweet in enumerate(data["clean_tweets"]) if data["Sentiment"][index] > 0]
+	neg_tweets = [tweet for index, tweet in enumerate(data["clean_tweets"]) if data["Sentiment"][index] < 0]
+	neu_tweets = [tweet for index, tweet in enumerate(data["clean_tweets"]) if data["Sentiment"][index] == 0]
+
+	#Print results
+	print("percentage of positive tweets: {}%".format(100*(len(pos_tweets)/len(data['clean_tweets']))))
+	print("percentage of negative tweets: {}%".format(100*(len(neg_tweets)/len(data['clean_tweets']))))
+	print("percentage of neutral tweets: {}%".format(100*(len(neu_tweets)/len(data['clean_tweets']))))
+
 
 
 
