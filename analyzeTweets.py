@@ -21,15 +21,16 @@ class TweetObject():
 
 	"""
 
-	def __init__(self, host, database, user, password):
+	def __init__(self, host, database, user):
 		self.consumer_key = os.environ['CONSUMER_KEY']
 		self.consumer_secret = os.environ['CONSUMER_SECRET']
 		self.access_token = os.environ['ACCESS_TOKEN']
 		self.access_token_secret = os.environ['ACCESS_TOKEN_SECRET']
+		self.password = os.environ['PASSWORD']
 		self.host = host
 		self.database = database
 		self.user = user
-		self.password =  password
+		
 
 
 	def MySQLConnect(self,query):
@@ -180,9 +181,9 @@ class TweetObject():
 
 if __name__ == '__main__':
 
-	t = TweetObject( host = 'localhost', database = 'twitterdb', user = 'root', password = 'titleist920')
+	t = TweetObject( host = 'localhost', database = 'twitterdb', user = 'root')
 
-	data  = t.MySQLConnect("SELECT created_at, tweet FROM `TwitterDB`.`Twitter`;")
+	data  = t.MySQLConnect("SELECT created_at, tweet FROM `TwitterDB`.`Golf`;")
 	data = t.clean_tweets(data)
 	data['Sentiment'] = np.array([t.sentiment(x) for x in data['clean_tweets']])
 	t.word_cloud(data)

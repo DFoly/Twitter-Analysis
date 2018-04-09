@@ -17,6 +17,7 @@ consumer_key = os.environ['CONSUMER_KEY']
 consumer_secret = os.environ['CONSUMER_SECRET']
 access_token = os.environ['ACCESS_TOKEN']
 access_token_secret = os.environ['ACCESS_TOKEN_SECRET']
+password = os.environ['PASSWORD']
 
 
 def connect(username, created_at, tweet, retweet_count, place , location):
@@ -25,7 +26,7 @@ def connect(username, created_at, tweet, retweet_count, place , location):
 	"""
 	try:
 		con = mysql.connector.connect(host = 'localhost',
-		database='twitterdb', user='root', password = , charset = 'utf8')
+		database='twitterdb', user='root', password = password, charset = 'utf8')
 		
 
 		if con.is_connected():
@@ -120,7 +121,7 @@ if __name__== '__main__':
 	listener = Streamlistener(api = api)
 	stream = tweepy.Stream(auth, listener = listener)
 
-	track = ['golf', 'masters', 'reid', 'mcilroy', 'woods']
+	track = ['golf', 'masters', 'reed', 'mcilroy', 'woods']
 	#track = ['nba', 'cavs', 'celtics', 'basketball']
 	# choose what we want to filter by
 	stream.filter(track = track, languages = ['en'])
